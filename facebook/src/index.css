@@ -1,0 +1,12 @@
+
+.post
+{
+    width:18rem;
+}
+
+.close
+{
+    text-decoration: none;
+    color:#000;
+    cursor: pointer;
+}
