@@ -1,4 +1,5 @@
 const postServices = require("../services/postServices");
+const fs = require("fs");
 
 const getPostsController = async (req, res) => {
   try {
@@ -11,9 +12,18 @@ const getPostsController = async (req, res) => {
 
 const createPostsController = async (req, res) => {
   try {
-    const body = req.body;
+    const body = {
+      title: req.body.title,
+      content: req.body.content,
+      image: {
+        data: req.file.buffer.toString("base64"),
+        contentType: req.file.mimetype,
+      },
+    };
+    console.log(body);
     const post = await postServices.createPosts(body);
     return res.status(200).json(post);
+    console.log(post);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -32,7 +42,14 @@ const deletePostsController = async (req, res) => {
 const updatePostsController = async (req, res) => {
   try {
     const id = req.params.id;
-    const body = req.body;
+    const body = {
+      title: req.body.title,
+      content: req.body.content,
+      image: {
+        data: req.file.buffer.toString("base64"),
+        contentType: req.file.mimetype,
+      },
+    };
     const post = await postServices.updatePosts(id, body);
     return res.status(200).json(post);
   } catch (error) {

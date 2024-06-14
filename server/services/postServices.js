@@ -1,7 +1,7 @@
 const PostModel = require("../model/postModel");
 
 const getAllPosts = async () => {
-  return await PostModel.find();
+  return await PostModel.find().sort({ _id: -1 });
 };
 
 const createPosts = async (data) => {

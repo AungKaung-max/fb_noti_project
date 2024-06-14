@@ -1,56 +1,50 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
-export default function Editform({ addForm }) {
+export default function Form() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
+  const [image, setImage] = useState(null);
+  const navigate = useNavigate();
+  const formData = new FormData();
+  const Submit = (e) => {
+    e.preventDefault();
+    
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("image", image);
     (async () => {
       try {
-        // eslint-disable-next-line react/prop-types
-        setTitle(addForm.title);
-        // eslint-disable-next-line react/prop-types
-        setContent(addForm.content);
-        console.log("EditForm", addForm);
-      } catch (error) {
-        console.log("No data Found!");
-      }
-    })();
-  }, [addForm]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    (async () => {
-      try {
-        // eslint-disable-next-line react/prop-types
-        const result = await axios.patch(
-          // eslint-disable-next-line react/prop-types
-          `http://localhost:4000/api/posts/${addForm._id}`,
-          {
-            title,
-            content,
-          }
+        const result = await axios.post('http://localhost:4000/api/posts',
+          formData
         );
-        addForm(result.data);
         console.log(result.data);
-        setSuccess(true);
+       setTimeout(() => {
+        navigate('/');
+       },1300)
+       setSuccess(true);
       } catch (error) {
         console.log("No data Found!");
       }
     })();
-  };
+  
+  }
   return (
     <>
       <div className="container">
-        <form method="post" onSubmit={handleSubmit}>
+        <form
+          method="post"
+          onSubmit={Submit}
+          encType="multipart/form-data"
+        >
           <div className="form-group mt-4">
             <label htmlFor="title">Title</label>
             <input
               type="text"
               className="form-control mt-2"
+              placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -64,14 +58,24 @@ export default function Editform({ addForm }) {
               value={content}
               id="content"
               onChange={(e) => setContent(e.target.value)}
+              placeholder="Content"
             ></textarea>
+          </div>
+          <div className="form-group mt-3">
+            <input
+              type="file"
+              className="form-control"
+              name="image"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+            />
           </div>
           <button type="submit" className="btn btn-primary mt-3">
             Submit
           </button>
         </form>
         {success && (
-          <p className="text-success mt-3 fade-out">Post Edit Successfully</p>
+          <p className="text-success mt-3 fade-out">Post Added Successfully</p>
         )}
       </div>
     </>

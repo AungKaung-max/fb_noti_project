@@ -10,10 +10,12 @@ const PostSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  // photo: {
-  //   type: String,
-  //   required: true,
-  // },
+
+  image: {
+    data: { type: String, required: true }, // Store as base64 string
+    contentType: { type: String, required: true },
+  },
+
   // likers: {
   //   type: [String],
   //   default: [],
