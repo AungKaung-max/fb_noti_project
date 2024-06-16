@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Navform() {
   const [showLogin, setShowLogin] = useState(false);
@@ -10,6 +13,34 @@ export default function Navform() {
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
+    (async () => {
+      try {
+        const result = await axios.post(
+          "http://localhost:4000/api/users/register",
+          {
+            username: registerUsername,
+            email: registerEmail,
+            password: registerPassword,
+          }
+        );
+        console.log(result.data);
+        if (result.data) {
+          toast.success('Registration successful! You can now log in.');
+          handleRegisterClose(); // Close the registration modal
+        }
+        handleRegisterClose();
+      } catch (error) {
+        toast.error(
+          "Registration failed. Please check your details and try again."
+        );
+        console.log("No data Found!");
+      }
+    })();
+    handleRegisterClose();
+  };
 
   const handleLoginShow = (e) => {
     e.preventDefault();
@@ -28,16 +59,6 @@ export default function Navform() {
     e.preventDefault();
     console.log("Login:", { loginEmail, loginPassword });
     handleLoginClose();
-  };
-
-  const handleRegisterSubmit = (e) => {
-    e.preventDefault();
-    console.log("Register:", {
-      registerUsername,
-      registerEmail,
-      registerPassword,
-    });
-    handleRegisterClose();
   };
 
   const switchToRegister = () => {
@@ -183,7 +204,7 @@ export default function Navform() {
         </Modal.Body>
       </Modal>
 
-     
+      <ToastContainer />
     </>
   );
 }
