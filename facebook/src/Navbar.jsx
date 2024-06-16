@@ -1,8 +1,52 @@
-import {Link} from "react-router-dom";
-export default function Navbar() {
+import { Link } from "react-router-dom";
+import { Modal, Button, Form } from "react-bootstrap";
+import { useState } from "react";
+
+export default function Navform() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginPassword, setLoginPassword] = useState("");
+  const [showRegister, setShowRegister] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [registerUsername, setRegisterUsername] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+
+  const handleLoginShow = (e) => {
+    e.preventDefault();
+    setShowLogin(true);
+  };
+
+  const handleRegisterShow = (e) => {
+    e.preventDefault();
+    setShowRegister(true);
+  };
+  const handleLoginClose = () => setShowLogin(false);
+
+  const handleRegisterClose = () => setShowRegister(false);
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    console.log("Login:", { loginEmail, loginPassword });
+    handleLoginClose();
+  };
+
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
+    console.log("Register:", {
+      registerUsername,
+      registerEmail,
+      registerPassword,
+    });
+    handleRegisterClose();
+  };
+
+  const switchToRegister = () => {
+    handleLoginClose();
+    setShowRegister(true);
+  };
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg  navbar-light bg-light">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             Micro Vita
@@ -11,12 +55,11 @@ export default function Navbar() {
             <ul className="navbar-nav">
               <li className="nav-item">
                 <Link to="/create">
-                <a className="nav-link" aria-current="page" href="#">
-                   +Create Post
-                </a>
+                  <a className="nav-link" aria-current="page" href="#">
+                    +Create Post
+                  </a>
                 </Link>
               </li>
-             
             </ul>
             <ul className="navbar-nav ms-auto">
               <li className="nav-item dropdown">
@@ -27,25 +70,28 @@ export default function Navbar() {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Log In
+                  Account
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={handleLoginShow}
+                    >
+                      Login
                     </a>
                   </li>
                   <li>
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={handleRegisterShow}
+                    >
+                      Register
                     </a>
                   </li>
                 </ul>
@@ -54,6 +100,90 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      <Modal show={showLogin} onHide={handleLoginClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Login</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleLoginSubmit}>
+            <Form.Group controlId="formLoginEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formLoginPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+              />
+            </Form.Group>
+
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+          <div className="mt-3">
+            <span>Don&apos;t have an account? </span>
+            <Button variant="link" onClick={switchToRegister}>
+              Register here
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showRegister} onHide={handleRegisterClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Register</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleRegisterSubmit}>
+            <Form.Group controlId="formRegisterUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                value={registerUsername}
+                onChange={(e) => setRegisterUsername(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formRegisterEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={registerEmail}
+                onChange={(e) => setRegisterEmail(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formRegisterPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={registerPassword}
+                onChange={(e) => setRegisterPassword(e.target.value)}
+              />
+            </Form.Group>
+
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+     
     </>
   );
 }

@@ -1,3 +1,6 @@
+
+
+
 .post {
   width: 18rem;
 }
@@ -79,4 +82,19 @@ body {
 
 .form-control {
   margin-bottom: 10px;
+}
+
+.modal {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translate(0, -50px);
+  opacity: 0;
+}
+
+.modal.show .modal-dialog {
+  transform: translate(0, 0);
+  opacity: 1;
 }
