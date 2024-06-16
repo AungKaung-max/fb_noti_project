@@ -77,12 +77,17 @@ export default function Post() {
             </Card.Body>
             <Card.Footer className="d-flex justify-content-between align-items-center">
               <div>
-                <Button variant="primary" className="me-2">
-                  Like
+                <Button variant="link" className="me-2 like-button">
+                  <i className="fa fa-thumbs-up"></i>Like
                 </Button>
-                <Button variant="link">Comment</Button>
+                <Button variant="link" className="comment-button">
+                  <i className="fa fa-comment"></i>
+                  Comment
+                </Button>
               </div>
-              <Button variant="link">Share</Button>
+              <Button variant="link" className="share-button">
+                Share
+              </Button>
             </Card.Footer>
             <ListGroup variant="flush">
               <ListGroup.Item>
@@ -110,36 +115,6 @@ export default function Post() {
           </Card>
         ))}
       </div>
-      {/* <div className="container mt-5">
-        {posts.map((data) => (
-          <div className="card mt-3" key={data._id}>
-            <div className="card-header d-flex">
-              <div className="flex-grow-1">Posts</div>
-
-              <div className="close px-2">
-                <Link to={`/update/${data._id}`} className="btn btn-success">
-                  Update
-                </Link>
-              </div>
-
-              <div className="close" onClick={() => handleDelete(data._id)}>
-                <a className="btn btn-danger">Delete</a>
-              </div>
-            </div>
-            <div className="card-body">
-              <h5 className="card-title">{data.title}</h5>
-              <p className="card-text">{data.content}</p>
-
-              <img
-                src={`data:${
-                  data.image.contentType
-                };base64,${data.image.data.toString("base64")}`}
-                alt="Post Image"
-              />
-            </div>
-          </div>
-        ))}
-      </div> */}
     </>
   );
 }
