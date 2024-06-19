@@ -1,4 +1,4 @@
-import Navbar from "../Navbar";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -8,10 +8,12 @@ export default function Post() {
   const [posts, setPost] = useState([]);
 
   useEffect(() => {
+  
     (async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("http://localhost:4000/api/posts");
+        const result = await axios.get("http://localhost:4000/api/posts",
+        );
         console.log(result.data);
         setPost(result.data);
       } catch (error) {
@@ -32,7 +34,7 @@ export default function Post() {
 
   return (
     <>
-      <Navbar />
+   
       <div className="container">
         {posts.map((data) => (
           <Card className="mt-3" key={data._id}>

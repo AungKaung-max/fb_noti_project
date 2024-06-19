@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Navform() {
@@ -13,6 +14,10 @@ export default function Navform() {
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [loginUserName, setLoginUserName] = useState("");
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +33,7 @@ export default function Navform() {
         );
         console.log(result.data);
         if (result.data) {
-          toast.success('Registration successful! You can now log in.');
+          toast.success("Registration successful! You can now log in.");
           handleRegisterClose(); // Close the registration modal
         }
         handleRegisterClose();
@@ -40,6 +45,37 @@ export default function Navform() {
       }
     })();
     handleRegisterClose();
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    (async () => {
+      try {
+        const result = await axios.post(
+          "http://localhost:4000/api/users/login",
+          {
+            username: loginUserName,
+            email: loginEmail,
+            password: loginPassword,
+          },
+        );
+        if (result.data) {
+          localStorage.setItem("user", result.data.payload.userId);
+          localStorage.setItem("token", result.data.token);
+          toast.success("Login successful!");
+          handleLoginClose();
+        }
+      } catch (error) {
+        toast.error(
+          "Login failed. Please check your credentials and try again."
+        );
+        console.error(
+          "Login error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    })();
+    handleLoginClose();
   };
 
   const handleLoginShow = (e) => {
@@ -55,16 +91,18 @@ export default function Navform() {
 
   const handleRegisterClose = () => setShowRegister(false);
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login:", { loginEmail, loginPassword });
-    handleLoginClose();
-  };
-
   const switchToRegister = () => {
     handleLoginClose();
     setShowRegister(true);
   };
+
+  const handleLogout = () =>
+    {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/");
+    }
+
   return (
     <>
       <nav className="navbar navbar-expand-lg  navbar-light bg-light">
@@ -75,14 +113,16 @@ export default function Navform() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <Link to="/create">
+                {token ? <Link to="/create">
                   <a className="nav-link" aria-current="page" href="#">
                     +Create Post
                   </a>
-                </Link>
+                </Link> :
+                  ""
+                } 
               </li>
             </ul>
-            <ul className="navbar-nav ms-auto">
+            {token?( <ul className="navbar-nav ms-auto">
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
@@ -98,12 +138,12 @@ export default function Navform() {
                     <a
                       className="dropdown-item"
                       href="#"
-                      onClick={handleLoginShow}
+                      onClick={handleLogout}
                     >
-                      Login
+                        Logout
                     </a>
                   </li>
-                  <li>
+                  {/* <li>
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
@@ -114,10 +154,48 @@ export default function Navform() {
                     >
                       Register
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
-            </ul>
+            </ul>):
+             <ul className="navbar-nav ms-auto">
+             <li className="nav-item dropdown">
+               <a
+                 className="nav-link dropdown-toggle"
+                 href="#"
+                 role="button"
+                 data-bs-toggle="dropdown"
+                 aria-expanded="false"
+               >
+                 Account
+               </a>
+               <ul className="dropdown-menu dropdown-menu-end">
+                 <li>
+                   <a
+                     className="dropdown-item"
+                     href="#"
+                     onClick={handleLoginShow}
+                   >
+                       Login
+                   </a>
+                 </li>
+                 <li>
+                   <hr className="dropdown-divider" />
+                 </li>
+                 <li>
+                   <a
+                     className="dropdown-item"
+                     href="#"
+                     onClick={handleRegisterShow}
+                   >
+                     Register
+                   </a>
+                 </li>
+               </ul>
+             </li>
+           </ul>
+            }
+           
           </div>
         </div>
       </nav>
@@ -128,6 +206,15 @@ export default function Navform() {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleLoginSubmit}>
+            <Form.Group controlId="formLoginName">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Username"
+                value={loginUserName}
+                onChange={(e) => setLoginUserName(e.target.value)}
+              />
+            </Form.Group>
             <Form.Group controlId="formLoginEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control

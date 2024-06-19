@@ -13,6 +13,7 @@ const getPostsController = async (req, res) => {
 const createPostsController = async (req, res) => {
   try {
     const body = {
+      // userId: req.user._id,
       title: req.body.title,
       content: req.body.content,
       image: {
@@ -23,7 +24,6 @@ const createPostsController = async (req, res) => {
     console.log(body);
     const post = await postServices.createPosts(body);
     return res.status(200).json(post);
-    console.log(post);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

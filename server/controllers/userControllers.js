@@ -2,7 +2,7 @@ const userServices = require("../services/userServices");
 
 const loginUsersController = async (req, res) => {
   try {
-    const users = await userServices.login();
+    const users = await userServices.login(req.body);
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });

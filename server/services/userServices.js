@@ -1,8 +1,23 @@
 const UserModel = require("../model/userModel");
 const bcrypt = require("bcryptjs");
+const config = require("../config/config");
+const jwt = require("jsonwebtoken");
 
-const login = async () => {
-  return await UserModel.find();
+const login = async (data) => {
+  const user = await UserModel.findOne({
+    $and: [{ username: data.username }, { email: data.email }],
+  });
+  if (!user || !(await bcrypt.compare(data.password, user.password))) {
+    throw new Error("Invalid username/email or password");
+  }
+  const payload = { userId: user._id };
+  const token = jwt.sign(payload, config.jwtSecret, {
+    expiresIn: "30days",
+  });
+  return {
+    token,
+    payload,
+  };
 };
 
 const register = async (username, email, password) => {

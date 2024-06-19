@@ -7,6 +7,7 @@ const {
 } = require("../controllers/postControllers");
 
 const upload = require("../middlewares/uploadMiddleware");
+const authenticateJWT = require("../middlewares/authenticateJWT");
 
 const express = require("express");
 
@@ -16,7 +17,7 @@ router.get("/posts", getPostsController);
 
 router.get("/posts/:id", getPostsControllerId);
 
-router.post("/posts", upload, createPostsController);
+router.post("/posts", authenticateJWT, upload, createPostsController);
 
 router.delete("/posts/:id", deletePostsController);
 
