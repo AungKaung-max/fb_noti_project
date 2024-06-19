@@ -10,15 +10,13 @@ export default function Form() {
   const [title, setTitle] = useState("");
   const [success, setSuccess] = useState(false);
   const [image, setImage] = useState(null);
-  const [userId, setUserId] = useState("");
+
   const navigate = useNavigate();
   const formData = new FormData();
   const Submit = (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem("user");
     const token = localStorage.getItem("token");
-    setUserId(userId)
 
     formData.append("title", title);
     formData.append("content", content);
@@ -27,18 +25,18 @@ export default function Form() {
       try {
         const result = await axios.post(
           "http://localhost:4000/api/posts",
-      
+
           formData,
           {
-            headers:{
-              Authorization: `Bearer ${token}`
-            }
-          },
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
         );
         console.log(result.data);
         setTimeout(() => {
           navigate("/");
-        }, 1300);
+        }, 800);
         setSuccess(true);
       } catch (error) {
         console.log("No data Found!");
@@ -49,7 +47,6 @@ export default function Form() {
     <>
       <div className="container">
         <form method="post" onSubmit={Submit} encType="multipart/form-data">
-          <input type="hidden" value={userId} readOnly />
           <div className="form-group mt-4">
             <label htmlFor="title">Title</label>
             <input

@@ -1,19 +1,18 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Card, Button, ListGroup } from "react-bootstrap";
+import { Card, Button, ListGroup, Badge } from "react-bootstrap";
 
 export default function Post() {
   const [posts, setPost] = useState([]);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-  
     (async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("http://localhost:4000/api/posts",
-        );
+        const result = await axios.get("http://localhost:4000/api/posts");
         console.log(result.data);
         setPost(result.data);
       } catch (error) {
@@ -24,7 +23,11 @@ export default function Post() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/posts/${id}`);
+      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("Deleted", id);
       setPost(posts.filter((post) => post._id !== id));
     } catch (error) {
@@ -32,9 +35,41 @@ export default function Post() {
     }
   };
 
+  const handleLike = async (postId) => {
+    try {
+      console.log(postId);
+      const response = await axios.put(
+        `http://localhost:4000/api/posts/${postId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Post liked successfully:", response.data);
+
+      setPost(
+        posts.map((post) =>
+          post._id === postId
+            ? { ...post, likers: [...post.likers, userId]}
+            : post
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Error liking post:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const isPostLikedByUser = (post) => {
+    return post.likers.includes(userId);
+  };
+
   return (
     <>
-   
       <div className="container">
         {posts.map((data) => (
           <Card className="mt-3" key={data._id}>
@@ -79,9 +114,24 @@ export default function Post() {
             </Card.Body>
             <Card.Footer className="d-flex justify-content-between align-items-center">
               <div>
-                <Button variant="link" className="me-2 like-button">
-                  <i className="fa fa-thumbs-up"></i>Like
+                <Button
+                  variant="link"
+                  className={`me-2 like-button ${
+                    isPostLikedByUser(data) ? "text-primary" : ""
+                  }`}
+                  onClick={() => handleLike(data._id)}
+                >
+                  <i className="fa fa-thumbs-up"></i>
+                  {isPostLikedByUser(data) ? "Liked" : "Like"}
+                  {data.likers.length === 0 ? (
+                    ""
+                  ) : (
+                    <Badge bg="primary" className="ms-2">
+                      {data.likers.length}
+                    </Badge>
+                  )}
                 </Button>
+
                 <Button variant="link" className="comment-button">
                   <i className="fa fa-comment"></i>
                   Comment

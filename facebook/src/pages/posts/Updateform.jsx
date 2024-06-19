@@ -8,6 +8,8 @@ export default function Editform() {
   const [title, setTitle] = useState("");
   const [success, setSuccess] = useState(false);
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const token = localStorage.getItem("token");
   const formData = new FormData();
   const navigate = useNavigate();
 
@@ -18,11 +20,25 @@ export default function Editform() {
         console.log(result.data);
         setTitle(result.data.title);
         setContent(result.data.content);
+        setImagePreview(
+          `data:${result.data.image.contentType};base64,${result.data.image.data}`
+        );
+        setImage(result.data.image);
       } catch (error) {
         console.log("No data Found!");
       }
     })();
-  }, []);
+  }, [id, token]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -34,7 +50,12 @@ export default function Editform() {
         // eslint-disable-next-line react/prop-types
         const result = await axios.put(
           `http://localhost:4000/api/posts/${id}`,
-          formData
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         console.log(result.data);
         setTimeout(() => {
@@ -74,13 +95,28 @@ export default function Editform() {
               onChange={(e) => setContent(e.target.value)}
             ></textarea>
           </div>
+
           <div className="form-group mt-3">
+            <label htmlFor="image">Image</label>
+            {imagePreview && (
+              <div className="mb-3">
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
             <input
               type="file"
               className="form-control"
               name="image"
               accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={handleFileChange}
             />
           </div>
           <button type="submit" className="btn btn-primary mt-3">

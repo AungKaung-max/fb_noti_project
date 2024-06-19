@@ -4,6 +4,7 @@ const {
   deletePostsController,
   updatePostsController,
   getPostsControllerId,
+  likePostsController,
 } = require("../controllers/postControllers");
 
 const upload = require("../middlewares/uploadMiddleware");
@@ -19,8 +20,10 @@ router.get("/posts/:id", getPostsControllerId);
 
 router.post("/posts", authenticateJWT, upload, createPostsController);
 
-router.delete("/posts/:id", deletePostsController);
+router.put("/posts/:id/like", authenticateJWT, likePostsController);
 
-router.put("/posts/:id", upload, updatePostsController);
+router.delete("/posts/:id", authenticateJWT, deletePostsController);
+
+router.put("/posts/:id", authenticateJWT, upload, updatePostsController);
 
 module.exports = router;

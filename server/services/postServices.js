@@ -6,6 +6,7 @@ const getAllPosts = async () => {
 
 const createPosts = async (data) => {
   const posts = await PostModel.create(data);
+
   return await posts;
 };
 
@@ -23,10 +24,19 @@ const getPostsById = async (id) => {
   const posts = await PostModel.findById(id);
   return await posts;
 };
+
+const likePosts = async (userId, postId) => {
+  const post = await PostModel.findByIdAndUpdate(
+    postId,
+    { $push: { likers: userId } },
+    { new: true }
+  );
+};
 module.exports = {
   getAllPosts,
   createPosts,
   deletePosts,
   updatePosts,
   getPostsById,
+  likePosts,
 };

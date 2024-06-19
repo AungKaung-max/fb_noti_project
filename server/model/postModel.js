@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const PostSchema = mongoose.Schema({
-  // userId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User", // Reference to the User model
-  //   required: true,
-  // },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // Reference to the User model
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -20,10 +20,10 @@ const PostSchema = mongoose.Schema({
     contentType: { type: String, required: true },
   },
 
-  // likers: {
-  //   type: [String],
-  //   default: [],
-  // },
+  likers: {
+    type: [String],
+    default: [],
+  },
 });
 
 const PostModel = mongoose.model("fb_post", PostSchema);
