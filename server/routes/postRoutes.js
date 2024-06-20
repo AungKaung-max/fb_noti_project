@@ -5,6 +5,7 @@ const {
   updatePostsController,
   getPostsControllerId,
   likePostsController,
+  dislikePostsController,
 } = require("../controllers/postControllers");
 
 const upload = require("../middlewares/uploadMiddleware");
@@ -21,6 +22,8 @@ router.get("/posts/:id", getPostsControllerId);
 router.post("/posts", authenticateJWT, upload, createPostsController);
 
 router.put("/posts/:id/like", authenticateJWT, likePostsController);
+
+router.put("/posts/:id/dislike", authenticateJWT, dislikePostsController);
 
 router.delete("/posts/:id", authenticateJWT, deletePostsController);
 

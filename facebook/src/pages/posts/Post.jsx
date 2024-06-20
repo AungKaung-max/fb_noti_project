@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, } from "react-router-dom";
 import { Card, Button, ListGroup, Badge } from "react-bootstrap";
-
 export default function Post() {
   const [posts, setPost] = useState([]);
   const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("user");
 
   useEffect(() => {
+
     (async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("http://localhost:4000/api/posts");
+        const result = await axios.get("http://localhost:4000/api/posts", {
+        });
         console.log(result.data);
         setPost(result.data);
       } catch (error) {
@@ -36,8 +37,34 @@ export default function Post() {
   };
 
   const handleLike = async (postId) => {
+    const post = posts.find((p) => p._id === postId);
+
+    if (post.liked) {
+      try {
+        const response = await axios.put(
+          `http://localhost:4000/api/posts/${postId}/dislike`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Post disliked successfully:", response.data);
+
+        setPost((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === postId
+              ? { ...post, likers: post.likers.filter((id) => id !== userId), liked: false }
+              : post
+          )
+        );
+      } catch (error) {
+        console.error("Error disliking post:", error.response?.data || error.message);
+      }
+    } else {
+
     try {
-      console.log(postId);
       const response = await axios.put(
         `http://localhost:4000/api/posts/${postId}/like`,
         {},
@@ -48,26 +75,23 @@ export default function Post() {
         }
       );
       console.log("Post liked successfully:", response.data);
-
-      setPost(
-        posts.map((post) =>
+      
+      setPost((prevPosts) =>
+        prevPosts.map((post) =>
           post._id === postId
-            ? { ...post, likers: [...post.likers, userId]}
+            ? { ...post, likers: [...post.likers, userId],liked: true}
             : post
         )
       );
+
     } catch (error) {
       console.error(
         "Error liking post:",
         error.response?.data || error.message
       );
     }
-  };
-
-  const isPostLikedByUser = (post) => {
-    return post.likers.includes(userId);
-  };
-
+  }
+  }
   return (
     <>
       <div className="container">
@@ -117,15 +141,13 @@ export default function Post() {
                 <Button
                   variant="link"
                   className={`me-2 like-button ${
-                    isPostLikedByUser(data) ? "text-primary" : ""
+                    token && data.likers.includes(userId) ? "text-primary" : ""
                   }`}
                   onClick={() => handleLike(data._id)}
                 >
                   <i className="fa fa-thumbs-up"></i>
-                  {isPostLikedByUser(data) ? "Liked" : "Like"}
-                  {data.likers.length === 0 ? (
-                    ""
-                  ) : (
+                  {token && data.likers.includes(userId) ? "Liked" : "Like"}
+                  {data.likers && data.likers.length > 0 && (
                     <Badge bg="primary" className="ms-2">
                       {data.likers.length}
                     </Badge>

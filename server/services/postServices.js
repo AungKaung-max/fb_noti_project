@@ -31,6 +31,16 @@ const likePosts = async (userId, postId) => {
     { $push: { likers: userId } },
     { new: true }
   );
+  return post;
+};
+
+const dislikePosts = async (userId, postId) => {
+  const post = await PostModel.findByIdAndUpdate(
+    postId,
+    { $pull: { likers: userId } },
+    { new: true }
+  );
+  return { post, likersCount: post.likers.length };
 };
 module.exports = {
   getAllPosts,
@@ -39,4 +49,5 @@ module.exports = {
   updatePosts,
   getPostsById,
   likePosts,
+  dislikePosts,
 };

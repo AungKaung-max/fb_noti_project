@@ -5,6 +5,7 @@ import Login from "../auth/login/Login";
 import Register from "../auth/register/Register";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+
 export default function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
@@ -25,7 +26,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/");
+    navigate(window.location.pathname === '/' ? 0 : '/');
 
   };
 
@@ -64,7 +65,11 @@ export default function Header() {
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a className="dropdown-item" href="#" onClick={handleLogout}>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={handleLogout}
+                      >
                         Logout
                       </a>
                     </li>
@@ -85,7 +90,11 @@ export default function Header() {
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a className="dropdown-item" href="#" onClick={handleLoginShow}>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={handleLoginShow}
+                      >
                         Login
                       </a>
                     </li>
@@ -93,7 +102,11 @@ export default function Header() {
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#" onClick={handleRegisterShow}>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={handleRegisterShow}
+                      >
                         Register
                       </a>
                     </li>
@@ -105,9 +118,12 @@ export default function Header() {
         </div>
       </nav>
 
-      <Login show={showLogin} handleClose={handleLoginClose} switchToRegister={switchToRegister} />
+      <Login
+        show={showLogin}
+        handleClose={handleLoginClose}
+        switchToRegister={switchToRegister}
+      />
       <Register show={showRegister} handleClose={handleRegisterClose} />
-
       <ToastContainer />
     </>
   );

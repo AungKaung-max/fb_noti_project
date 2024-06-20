@@ -85,6 +85,17 @@ const likePostsController = async (req, res) => {
   }
 };
 
+const dislikePostsController = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const postId = req.params.id;
+    const post = await postServices.dislikePosts(userId, postId);
+    return res.status(200).json(post);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getPostsController,
   createPostsController,
@@ -92,4 +103,5 @@ module.exports = {
   updatePostsController,
   getPostsControllerId,
   likePostsController,
+  dislikePostsController,
 };
