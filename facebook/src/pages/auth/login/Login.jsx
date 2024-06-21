@@ -27,7 +27,7 @@ export default function Login({ show, handleClose, switchToRegister }) {
           localStorage.setItem("user", result.data.payload.userId);
           localStorage.setItem("token", result.data.token);
           toast.success('Login successful!');
-          navigate(window.location.pathname === '/' ? 0 : '/');
+          navigate('/')
         }
       } catch (error) {
         toast.error(
