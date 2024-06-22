@@ -14,7 +14,7 @@ export default function Register({ show, handleClose }) {
     (async () => {
       try {
         const result = await axios.post(
-          "http://localhost:4000/api/users/register",
+          "https://fb-noti-project.onrender.com/api/users/register",
           {
             username: registerUsername,
             email: registerEmail,

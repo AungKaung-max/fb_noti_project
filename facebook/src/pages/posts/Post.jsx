@@ -32,7 +32,7 @@ const PostProvider = ({ children }) => {
     const fetchPosts = async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("http://localhost:4000/api/posts");
+        const result = await axios.get("https://fb-noti-project.onrender.com/api/posts");
         setPosts(result.data);
       } catch (error) {
         console.log("No data Found!");
@@ -47,7 +47,7 @@ const PostProvider = ({ children }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
+      await axios.delete(`https://fb-noti-project.onrender.com/api/posts/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,7 +65,7 @@ const PostProvider = ({ children }) => {
     if (post.likers.includes(userId)) {
       try {
         await axios.put(
-          `http://localhost:4000/api/posts/${postId}/dislike`,
+          `https://fb-noti-project.onrender.com/api/posts/${postId}/dislike`,
           {},
           {
             headers: {
@@ -87,7 +87,7 @@ const PostProvider = ({ children }) => {
     } else {
       try {
         await axios.put(
-          `http://localhost:4000/api/posts/${postId}/like`,
+          `https://fb-noti-project.onrender.com/api/posts/${postId}/like`,
           {},
           {
             headers: {
