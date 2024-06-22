@@ -17,7 +17,7 @@ const PostProvider = ({ children }) => {
     const fetchPosts = async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("https://fb-noti-project-server.vercel.app/api/posts");
+        const result = await axios.get("http://localhost:4000/api/posts");
         setPosts(result.data);
       } catch (error) {
         console.log("No data Found!");

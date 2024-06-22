@@ -24,7 +24,7 @@ export default function Form() {
     (async () => {
       try {
         const result = await axios.post(
-          "http://localhost:4000/api/posts",
+          "https://fb-noti-project.onrender.com//api/posts",
 
           formData,
           {
