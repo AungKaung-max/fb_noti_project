@@ -15,6 +15,9 @@ mongodbConnection();
 
 app.use("/api", postRoutes);
 app.use("/api", userRoutes);
+app.get("/", (req, res) => {
+  res.status(200).json({ data: "Welcome from api" });
+});
 
 const PORT = config.port || 4000;
 
