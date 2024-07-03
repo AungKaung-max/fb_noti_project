@@ -15,7 +15,7 @@ export default function Editform() {
   useEffect(() => {
     (async () => {
       try {
-        const result = await axios.get(`http://localhost:4000/api/posts/${id}`);
+        const result = await axios.get(`https://fb-noti-project.onrender.com/api/posts/${id}`);
         console.log(result.data);
         setTitle(result.data.title);
         setContent(result.data.content);
@@ -52,7 +52,7 @@ export default function Editform() {
       try {
         // eslint-disable-next-line react/prop-types
         const result = await axios.put(
-          `http://localhost:4000/api/posts/${id}`,
+          `https://fb-noti-project.onrender.com/api/posts/${id}`,
           formData,
           {
             headers: {
