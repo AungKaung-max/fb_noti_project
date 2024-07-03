@@ -1,5 +1,7 @@
 const postServices = require("../services/postServices");
-const fs = require("fs");
+const userServices = require("../services/userServices");
+const notificationServices = require("../services/notificationServices");
+const { getSocket, getUserSocketId } = require("../socket/socket");
 
 const getPostsController = async (req, res) => {
   try {
@@ -28,9 +30,24 @@ const createPostsController = async (req, res) => {
         contentType: image.mimetype,
       },
     };
-    console.log(body);
+    // console.log(body);
     const post = await postServices.createPosts(body);
-    return res.status(200).json(post);
+    const user = await userServices.getUserName(userId);
+    const postWithUsername = {
+      ...post._doc,
+      username: user.username,
+    };
+    const io = getSocket();
+    const creatorSocketId = getUserSocketId(userId);
+    if (!creatorSocketId) {
+      console.error(`No socket ID found for user: ${userId}`);
+    }
+    io.sockets.sockets.forEach((socket) => {
+      if (!creatorSocketId.includes(socket.id)) {
+        socket.emit("newPost", postWithUsername);
+      }
+    });
+    return res.status(200).json(postWithUsername);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -49,14 +66,24 @@ const deletePostsController = async (req, res) => {
 const updatePostsController = async (req, res) => {
   try {
     const id = req.params.id;
-    const body = {
-      title: req.body.title,
-      content: req.body.content,
-      image: {
-        data: req.file.buffer.toString("base64"),
-        contentType: req.file.mimetype,
-      },
+    const { title, content, existingImage } = req.body;
+    const image = req.file;
+
+    let body = {
+      title,
+      content,
     };
+
+    if (image) {
+      body.image = {
+        data: image.buffer.toString("base64"),
+        contentType: image.mimetype,
+      };
+    } else if (existingImage) {
+      body.image = existingImage;
+    }
+
+    console.log(body);
     const post = await postServices.updatePosts(id, body);
     return res.status(200).json(post);
   } catch (error) {

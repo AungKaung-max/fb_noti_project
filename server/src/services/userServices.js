@@ -27,7 +27,23 @@ const register = async (username, email, password) => {
   return await UserModel.create({ username, email, password: hashedPassword });
 };
 
+const getUserName = async (id) => {
+  const username = await UserModel.findById(id);
+  return username;
+};
+
+const getAllUsers = async () => {
+  try {
+    const users = await UserModel.find({}, "username");
+    return users;
+  } catch (error) {
+    throw new Error("Error fetching users: " + error.message);
+  }
+};
+
 module.exports = {
   login,
   register,
+  getUserName,
+  getAllUsers,
 };

@@ -10,7 +10,6 @@ export default function Editform() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const token = localStorage.getItem("token");
-  const formData = new FormData();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,10 +19,12 @@ export default function Editform() {
         console.log(result.data);
         setTitle(result.data.title);
         setContent(result.data.content);
-        setImagePreview(
-          `data:${result.data.image.contentType};base64,${result.data.image.data}`
-        );
-        setImage(result.data.image);
+        if (result.data.image) {
+          setImagePreview(
+            `data:${result.data.image.contentType};base64,${result.data.image.data}`
+          );
+          setImage(result.data.image);
+        }
       } catch (error) {
         console.log("No data Found!");
       }
@@ -32,6 +33,7 @@ export default function Editform() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    console.log(file);
     setImage(file);
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -42,6 +44,7 @@ export default function Editform() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("image", image);
@@ -63,7 +66,7 @@ export default function Editform() {
         }, 1300);
         setSuccess(true);
       } catch (error) {
-        console.log("No data Found!");
+        console.log("Cant add Data");
       }
     })();
   };

@@ -7,22 +7,22 @@ const getAllPosts = async () => {
 const createPosts = async (data) => {
   const posts = await PostModel.create(data);
 
-  return await posts;
+  return posts;
 };
 
 const deletePosts = async (id) => {
   const posts = await PostModel.findByIdAndDelete(id);
-  return await posts;
+  return posts;
 };
 
 const updatePosts = async (id, data) => {
   const posts = await PostModel.findByIdAndUpdate(id, data);
-  return await posts;
+  return posts;
 };
 
 const getPostsById = async (id) => {
   const posts = await PostModel.findById(id);
-  return await posts;
+  return posts;
 };
 
 const likePosts = async (userId, postId) => {
@@ -42,6 +42,7 @@ const dislikePosts = async (userId, postId) => {
   );
   return { post, likersCount: post.likers.length };
 };
+
 module.exports = {
   getAllPosts,
   createPosts,
