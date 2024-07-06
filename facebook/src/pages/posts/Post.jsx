@@ -15,7 +15,7 @@ const App = () => {
     const fetchPosts = async () => {
       try {
         document.title = "Facebook";
-        const result = await axios.get("https://fb-noti-project.onrender.com/api/posts");
+        const result = await axios.get("http://localhost:4000/api/posts");
         setPosts(result.data);
       } catch (error) {
         console.log("No data Found!");
@@ -23,33 +23,11 @@ const App = () => {
     };
 
     fetchPosts();
-<<<<<<< HEAD
   }, []);
-=======
-  }, [posts]);
-
-  
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        document.title = "Facebook";
-        const result = await axios.get("https://fb-noti-project.onrender.com/api/posts");
-        setPosts(result.data);
-      } catch (error) {
-        console.log("No data Found!");
-      }
-    };
-
-    fetchPosts();
-  }, [userId]);
-
-
-  
->>>>>>> fbc0fffddc13a9b293928087a7d064dbccdf1d1f
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://fb-noti-project.onrender.com/api/posts/${id}`, {
+      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +44,7 @@ const App = () => {
     if (post.likers.includes(userId)) {
       try {
         await axios.put(
-          `https://fb-noti-project.onrender.com/api/posts/${postId}/dislike`,
+          `http://localhost:4000/api/posts/${postId}/dislike`,
           {},
           {
             headers: {
@@ -91,7 +69,7 @@ const App = () => {
     } else {
       try {
         await axios.put(
-          `https://fb-noti-project.onrender.com/api/posts/${postId}/like`,
+          `http://localhost:4000/api/posts/${postId}/like`,
           {},
           {
             headers: {

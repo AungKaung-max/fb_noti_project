@@ -16,7 +16,7 @@ export default function Login({ show, handleClose, switchToRegister }) {
     (async () => {
       try {
         const result = await axios.post(
-          "https://fb-noti-project.onrender.com/api/users/login",
+          "http://localhost:4000/api/users/login",
           {
             username: loginUserName,
             email: loginEmail,
